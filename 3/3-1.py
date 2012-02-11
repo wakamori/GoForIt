@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-3-1.py
-license BSD
-author chen_ji <wakamori111 at gmail.com>
-"""
-
 import sys
 
 # table size (ascii)
@@ -20,38 +14,35 @@ def make_qs_table(pattern, size):
     return qs_table
 
 # quick search
-def qs_search(buff, column, skip_count, pattern):
-    i = column
-    n = 0
-    while i < len(buff):
-        n += 1
-        i += skip_count
+def qs_search(buff, pattern):
+    n = len(buff)
     m = len(pattern)
     qs_table = make_qs_table(pattern, m)
     i = 0
     while i < n - m:
         j = 0
         while j < m:
-            if buff[column + (i + j) * skip_count] != pattern[j]:
+            if buff[i + j] != pattern[j]:
                 break
             j += 1
         if j == m:
             # found
             return i
         else:
-            i += qs_table[ord(buff[column + (i + m) * skip_count])]
-    j = column + i * skip_count
-    last = ''
-    while j < len(buff):
-        last += buff[j]
-        j += skip_count
-    if last == pattern:
+            i += qs_table[ord(buff[i + m])]
+    if buff[i:] == pattern:
         return i
     return -1
 
 def find(buff, word, skip_count):
+    l = len(buff)
     for column in xrange(skip_count):
-        r = qs_search(buff, column, skip_count, word)
+        search_buff = ''
+        cur = column
+        while cur < l:
+            search_buff += buff[cur]
+            cur += skip_count
+        r = qs_search(search_buff, word)
         if r >= 0:
             print str(skip_count) + ',' + str(r * skip_count + column + 1)
             return True
