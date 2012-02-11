@@ -14,53 +14,38 @@ def make_qs_table(pattern, size):
     return qs_table
 
 # quick search
-def qs_search(buff, column, skip_count, pattern):
-    #print "(", column, ",", skip_count, ")"
-    n = len(buff) / skip_count
-    if skip_count > 1 and (len(buff) - column - 1) / skip_count == n:
-        n += 1
+def qs_search(buff, pattern):
+    #print "(", buff, ")"
+    n = len(buff)
     m = len(pattern)
-    #print "n,m:", n, m
+    #print n, m
     qs_table = make_qs_table(pattern, m)
     i = 0
     while i < n - m:
         j = 0
         while j < m:
-            if buff[column + (i + j) * skip_count] != pattern[j]:
+            if buff[i + j] != pattern[j]:
                 break
             j += 1
         if j == m:
             # found
             return i
         else:
-            i += qs_table[ord(buff[column + (i + m) * skip_count])]
-    #if buff[i:] == pattern:
-    #    return i
-    j = column + i * skip_count
-    last = ''
-    while j < len(buff):
-        last += buff[j]
-        j += skip_count
-    #print "i:", i, "last:", last, "pattern:", pattern
-    if last == pattern:
+            i += qs_table[ord(buff[i + m])]
+    #print "i:", i, "last:", buff[i:], "pattern:", pattern
+    if buff[i:] == pattern:
         return i
-    #if column + i * skip_count < len(buff):
-    #    j = 0
-    #    while buff[column + i * skip_count + j] == pattern[j]:
-    #        print "len", len(pattern)
-    #        print "j", j
-    #        j += 1
-    #        if column + i * skip_count + j == len(buff):
-    #            return -1
-    #        if j == len(pattern):
-    #            return i
-    #print "buff:", buff[column + i * skip_count:]
     return -1
 
 def find(buff, word, skip_count):
     l = len(buff)
     for column in xrange(skip_count):
-        r = qs_search(buff, column, skip_count, word)
+        search_buff = ''
+        cur = column
+        while cur < l:
+            search_buff += buff[cur]
+            cur += skip_count
+        r = qs_search(search_buff, word)
         if r >= 0:
             print str(skip_count) + ',' + str(r * skip_count + column + 1)
             return True
