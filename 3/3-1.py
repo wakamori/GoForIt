@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+3-1.py
+license BSD
+author chen_ji <wakamori111 at gmail.com>
+"""
+
 import sys
 
 # table size (ascii)

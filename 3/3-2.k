@@ -1,6 +1,13 @@
 #!/usr/local/bin/konoha
 
+"""
+3-1.k
+license BSD
+author chen_ji <wakamori111 at gmail.com>
+"""
+
 using konoha.io.*;
+
 // table size (ascii)
 CSIZE = 256
 
