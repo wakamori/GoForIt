@@ -15,15 +15,20 @@ int[] make_qs_table(String pattern, int size) {
 }
 
 // quick search
-int qs_search(String buff, String pattern) {
-	int n = buff.size;
+int qs_search(String buff, int column, int skip_count, String pattern) {
+	int i = column;
+	int n = 0;
+	while (i < buff.size) {
+		n++;
+		i += skip_count;
+	}
 	int m = pattern.size;
 	int[] qs_table = make_qs_table(pattern, m);
 	int i = 0;
 	while (i < n - m) {
 		int j = 0;
 		while (j < m) {
-			if (buff[i + j] != pattern[j]) {
+			if (buff[column + (i + j) * skip_count] != pattern[j]) {
 				break;
 			}
 			j++;
@@ -32,10 +37,16 @@ int qs_search(String buff, String pattern) {
 			// found
 			return i;
 		} else {
-			i += qs_table[(to int)buff[i + m].encode()[0]];
+			i += qs_table[(to int)buff[column + (i + m) * skip_count].encode()[0]];
 		}
 	}
-	if (i <= n && buff.substring(i) == pattern) {
+	int j = column + i * skip_count;
+	String last = "";
+	while (j < buff.size) {
+		last += buff[j];
+		j += skip_count;
+	}
+	if (last == pattern) {
 		return i;
 	}
 	return -1;
@@ -43,17 +54,10 @@ int qs_search(String buff, String pattern) {
 
 // find pattern
 boolean find(String buff, String word, int skip_count) {
-	int l = buff.size;
-	for (int count = 0; count < skip_count; count++) {
-		String search_buff = "";
-		int cur = count;
-		while (cur < l) {
-			search_buff += buff[cur];
-			cur += skip_count;
-		}
-		int r = qs_search(search_buff, word);
+	for (int column = 0; column < skip_count; column++) {
+		int r = qs_search(buff, column, skip_count, word);
 		if (r >= 0) {
-			OUT << skip_count << "," << (r * skip_count + count + 1) << EOL;
+			OUT << skip_count << "," << (r * skip_count + column + 1) << EOL;
 			return true;
 		}
 	}
@@ -69,11 +73,7 @@ void main(String[] args)
 	String keyword = args[0];
 	OUT << "keyword: " << keyword << EOL;
 	OUT << "search string: ";
-	//String rand_str = "";
-	//Bytes buf = new byte[4096];
-	//while (IN.read(buf, buf.size - 1).size > 0) {
-	//	rand_str += buf.decode();
-	//}
+	OUT.flush();
 	String rand_str = IN.read().decode();
 	int l = rand_str.size;
 	OUT << EOL << "order: ";
@@ -92,5 +92,4 @@ void main(String[] args)
 			break;
 		}
 	}
-	OUT << EOL;
 }
