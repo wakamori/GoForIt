@@ -14,6 +14,8 @@ int[] make_qs_table(String pattern, int size) {
 	return qs_table;
 }
 
+int[] qs_table;
+
 // quick search
 int qs_search(String buff, int column, int skip_count, String pattern) {
 	int i = column;
@@ -23,7 +25,6 @@ int qs_search(String buff, int column, int skip_count, String pattern) {
 		i += skip_count;
 	}
 	int m = pattern.size;
-	int[] qs_table = make_qs_table(pattern, m);
 	int i = 0;
 	while (i < n - m) {
 		int j = 0;
@@ -71,12 +72,14 @@ void main(String[] args)
 		System.exit(1);
 	}
 	String keyword = args[0];
+	qs_table = make_qs_table(keyword, keyword.size);
 	OUT << "keyword: " << keyword << EOL;
 	OUT << "search string: ";
 	OUT.flush();
 	String rand_str = IN.read().decode();
 	int l = rand_str.size;
 	OUT << EOL << "order: ";
+	OUT.flush();
 	for (int i = 1; i <= l; i++) {
 		if (find(rand_str, keyword, i)) {
 			break;
@@ -86,7 +89,9 @@ void main(String[] args)
 	for (int i = keyword.size - 1; i >= 0; i--) {
 		rkeyword += keyword[i];
 	}
+	qs_table = make_qs_table(rkeyword, rkeyword.size);
 	OUT << "reverse order: ";
+	OUT.flush();
 	for (int i = 1; i <= l; i++) {
 		if (find(rand_str, rkeyword, i)) {
 			break;
