@@ -197,6 +197,8 @@ class Composer
             if (notes[notes.size - 1].pitch == end_pitch) {
                 if (total_val == feature_val) {
                     return true;
+                } else {
+                    return false;
                 }
             } else {
                 return false;
