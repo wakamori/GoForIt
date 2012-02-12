@@ -132,32 +132,20 @@ class Extractor
 		_score = score;
 	}
 
-	int[] extractFeature(String type) {
-		int[] ret = [];
-		switch (type) {
-		case "pitch":
-			Note pre_note = null;
-			foreach (Note note in score.notes) {
-				if (pre_note == null) {
-					ret.add(0);
-				} else if (note.rest) {
-					ret.add(0);
-					continue;
-				} else {
-					ret.add(note.pitch - pre_note.pitch);
-				}
-				pre_note = note;
+	int extractFeature() {
+		int feature_val = 0;
+		Note pre_note = null;
+		foreach (Note note in score.notes) {
+			if (pre_note == null) {
+			} else if (note.rest) {
+				continue;
+			} else {
+				print feature_val;
+				feature_val += Math.abs(note.pitch - pre_note.pitch);
 			}
-			break;
-		case "length":
-			foreach (Note note in score.notes) {
-				ret.add(note.length);
-			}
-			break;
-		default:
-			break;
+			pre_note = note;
 		}
-		return ret;
+		return feature_val;
 	}
 }
 
@@ -169,10 +157,5 @@ void main(String[] args)
 	}
 	Score score = new Score(args[0]);
 	Extractor extractor = new Extractor(score);
-	int[] pitch_diff = extractor.extractFeature("pitch");
-	int feature_val = 0;
-	foreach (int diff in pitch_diff) {
-		feature_val += Math.abs(diff);
-	}
-	OUT << "feature value: " <<  feature_val << EOL;
+	OUT << "feature value: " << extractor.extractFeature() << EOL;
 }
