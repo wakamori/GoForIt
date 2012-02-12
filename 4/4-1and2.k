@@ -136,11 +136,9 @@ class Extractor
 		int feature_val = 0;
 		Note pre_note = null;
 		foreach (Note note in score.notes) {
-			if (pre_note == null) {
-			} else if (note.rest) {
+			if (note.rest) {
 				continue;
-			} else {
-				print feature_val;
+			} else if (pre_note != null) {
 				feature_val += Math.abs(note.pitch - pre_note.pitch);
 			}
 			pre_note = note;
