@@ -120,7 +120,6 @@ class Score
 			String[] attr = note_str.split(":");
 			notes.add(new Note(attr[0], attr[1], attr[2]));
 		}
-		//print notes;
 	}
 }
 
@@ -140,23 +139,12 @@ class Extractor
 			Note pre_note = null;
 			foreach (Note note in score.notes) {
 				if (pre_note == null) {
-					//ret.add(note.pitch);
 					ret.add(0);
 				} else if (note.rest) {
 					ret.add(0);
 					continue;
-				//} else if (pre_note.rest) {
-				//	ret.add(0);
-					//ret.add(note.pitch);
-				//} else if (pre_note.rest) {
-				//	ret.add(0);
-				//	continue;
-				//} else if (pre_note.rest) {
-				//	print "hi";
-				//	ret.add(0);
 				} else {
 					ret.add(note.pitch - pre_note.pitch);
-					//ret.add(note.pitch - pre_note.pitch);
 				}
 				pre_note = note;
 			}
@@ -182,17 +170,9 @@ void main(String[] args)
 	Score score = new Score(args[0]);
 	Extractor extractor = new Extractor(score);
 	int[] pitch_diff = extractor.extractFeature("pitch");
-	print pitch_diff;
 	int feature_val = 0;
 	foreach (int diff in pitch_diff) {
 		feature_val += Math.abs(diff);
 	}
-	print feature_val;
-	int[] lengths = extractor.extractFeature("length");
-	print lengths;
-	int total_length = 0;
-	foreach (int length in lengths) {
-		total_length += length;
-	}
-	print total_length, total_length / 64;
+	OUT << "feature value: " <<  feature_val << EOL;
 }
