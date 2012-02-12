@@ -1,7 +1,7 @@
 #!/usr/local/bin/konoha
 
 """
-5-1.k
+5-2.k
 license BSD
 author chen_ji <wakamori111 at gmail.com>
 """
@@ -50,8 +50,8 @@ class Elevator
     }
 
     void declareUsers(String users_str) {
-        //OUT << "users: " << EOL;
-        //OUT << users_str << EOL;
+        OUT << "users: " << EOL;
+        OUT << users_str << EOL;
         foreach (String user_str in users_str.split("\n")) {
             String[] params = user_str.split(",");
             User user = new User((to int)params[0], (to int)params[1],
@@ -76,7 +76,7 @@ class Elevator
             //}
             foreach (User user in users) {
                 if (user.time <= curtime) {
-                    //print user.time, curtime;
+                    print user.time, curtime;
                     if (user.take == floor) {
                         getonuserids.add(user.id);
                     }
@@ -218,29 +218,62 @@ class Elevator
                 break;
             }
         }
-        return steps_str.trim();
+        return steps_str;
     }
 
     String work() {
         Tuple<int, int, int[]>[] steps = [];
         User[] passengers = [];
-        operate(steps, passengers, 1, 0, false);
-        //for (int i = 0; i < steps.size; i++) {
-        //    print i, steps[i];
-        //}
+        print operate(steps, passengers, 1, 0, false);
+        for (int i = 0; i < steps.size; i++) {
+            print i, steps[i];
+        }
         //print steps;
-        return outputSteps(steps);
+        OUT <<  outputSteps(steps) << EOL;
+        return "";
+    }
+}
+
+class Checker
+{
+    String input;
+    String output;
+
+    Checker(String input, String output) {
+        _input = input;
+        _output = output;
+    }
+
+    boolean checkDeclaration() {
+        return true;
+    }
+
+    boolean checkOperation() {
+        return false;
     }
 }
 
 void main(String[] args)
 {
-    if (args.size != 1) {
-        ERR << "Usage: konoha " + $script.name + " input.csv" << EOL;
+    if (args.size != 2) {
+        ERR << "Usage: konoha " + $script.name + " input.csv output.csv" << EOL;
         exit(1);
     }
     InputStream input_csv = new InputStream(args[0]);
-    elevator = new Elevator(1, 10, 2, 5, 1);
-    elevator.declareUsers(input_csv.read().decode().trim());
-    OUT << elevator.work() << EOL;
+    InputStream output_csv = new InputStream(args[1]);
+    Checker checker = new Checker(input_csv.read().decode().trim(),
+            output_csv.read().decode().trim());
+    if (checker.checkDeclaration()) {
+        OUT << "All declarations are correctly satisfied." << EOL;
+    } else {
+        OUT << "Not satisfied declarations exist." << EOL;
+    }
+    if (checker.checkOperation()) {
+        OUT << "All operations are correct." << EOL;
+    } else {
+        OUT << "Incorrect operations exist." << EOL;
+    }
+    //elevator = new Elevator(1, 10, 2, 5, 1);
+    //elevator.declareUsers(input_csv.read().decode().trim());
+    //OUT << elevator.work() << EOL;
 }
