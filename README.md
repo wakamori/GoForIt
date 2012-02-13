@@ -16,7 +16,7 @@ please download and install it via following KonohaScript project page.
  * http://code.google.com/p/konoha/ (code hosting page)
  * http://konohascript.org/         (project home page)
 
-If you prefer to compile and instlal from a source code package, type:
+If you prefer to compile and install from a source code package, type:
 
     $ svn co http://konoha.googlecode.com/svn/trunk/konoha/ konoha-read-only
     $ cd konoha-read-only/build
