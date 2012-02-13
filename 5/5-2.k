@@ -75,9 +75,11 @@ class Checker
             if (!found) {
                 if (user.id in? move.passengers) {
                     if (move.time < user.time) {
+                        print user, move;
                         return false;
                     }
                     if (move.floor != user.take) {
+                        print user, move;
                         return false;
                     }
                     found = true;
@@ -85,18 +87,21 @@ class Checker
             } else {
                 if (user.id in? move.passengers) {
                     if (move.floor != user.out) {
+                        print user, move;
                         return false;
                     }
                     return true;
                 }
             }
         }
+        print user;
         return false;
     }
 
     boolean checkDeclaration() {
         foreach (User user in users) {
             if (!checkUserisCorrect(user)) {
+                print user;
                 return false;
             }
         }
@@ -109,15 +114,18 @@ class Checker
         int prevtime = 0;
         foreach (Movement move in movements) {
             if (move.open == open) {
+                print move;
                 return false;
             }
             if (move.open) {
                 if (move.floor != prevfloor && (move.time - prevtime) /
                         Math.abs(move.floor - prevfloor) < 2) {
+                    print move;
                     return false;
                 }
             } else {
                 if (move.time - prevtime < 5) {
+                    print move;
                     return false;
                 }
             }
