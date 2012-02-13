@@ -131,80 +131,78 @@ class Elevator
             }
         }
         int[] destinations;
-        //if (passengers.size > 0) {
-        //    destination = selectDestination(passengers);
-        //} else {
-        //    destination = selectDeparture(curtime);
-        //}
         if (passengers.size > 0) {
-            destinations = makeRandomDestinations(passengers);
+            destination = selectDestination(passengers);
         } else {
-            destinations = makeRandomDeparture(curtime);
+            destination = selectDeparture(curtime);
         }
-        foreach (int destination in destinations) {
-            if (floor != destination) {
-                int time;
-                if (floor < destination) {
-                    steps.add((UP, destination, new int[0]));
-                    time = (destination - floor) * movetime;
-                } else {
-                    steps.add((DOWN, destination, new int[0]));
-                    time = (floor - destination) * movetime;
+        //if (passengers.size > 0) {
+        //    destinations = makeRandomDestinations(passengers);
+        //} else {
+        //    destinations = makeRandomDeparture(curtime);
+        //}
+        if (floor != destination) {
+            int time;
+            if (floor < destination) {
+                steps.add((UP, destination, new int[0]));
+                time = (destination - floor) * movetime;
+            } else {
+                steps.add((DOWN, destination, new int[0]));
+                time = (floor - destination) * movetime;
+            }
+            //print steps, passengers, destination, open;
+            if (operate(steps, passengers, destination,
+                        curtime + time, totaltime, open)) {
+                return true;
+            }
+            steps.pop();
+        } else {
+            if (passengers.size > 0) {
+                int[] getoffuserids = [];
+                foreach (User passenger in passengers) {
+                    if (passenger.out == floor && getoffuserids.size < capacity) {
+                        getoffuserids.add(passenger.id);
+                    }
                 }
-                //print steps, passengers, destination, open;
-                if (operate(steps, passengers, destination,
-                            curtime + time, totaltime, open)) {
+                foreach (int getoffuserid in getoffuserids) {
+                    for (int i = 0; i < passengers.size; i++) {
+                        if (passengers[i].id == getoffuserid) {
+                            passengers.remove(i);
+                            break;
+                        }
+                    }
+                }
+                steps.add((OPEN, getoffuserids.size, getoffuserids));
+                foreach (int getoffuserid in getoffuserids) {
+                    for (int i = 0; i < users.size; i++) {
+                        if (users[i].id == getoffuserid) {
+                            users.remove(i);
+                            break;
+                        }
+                    }
+                }
+                //print getoffuserids;
+                //print users;
+                //print steps, passengers, floor, curtime, open;
+                if (operate(steps, passengers, floor, curtime, totaltime, !open)) {
                     return true;
                 }
-                steps.pop();
             } else {
-                if (passengers.size > 0) {
-                    int[] getoffuserids = [];
-                    foreach (User passenger in passengers) {
-                        if (passenger.out == floor && getoffuserids.size < capacity) {
-                            getoffuserids.add(passenger.id);
-                        }
-                    }
-                    foreach (int getoffuserid in getoffuserids) {
-                        for (int i = 0; i < passengers.size; i++) {
-                            if (passengers[i].id == getoffuserid) {
-                                passengers.remove(i);
-                                break;
-                            }
-                        }
-                    }
-                    steps.add((OPEN, getoffuserids.size, getoffuserids));
-                    foreach (int getoffuserid in getoffuserids) {
-                        for (int i = 0; i < users.size; i++) {
-                            if (users[i].id == getoffuserid) {
-                                users.remove(i);
-                                break;
-                            }
-                        }
-                    }
-                    //print getoffuserids;
-                    //print users;
-                    //print steps, passengers, floor, curtime, open;
-                    if (operate(steps, passengers, floor, curtime, totaltime, !open)) {
+                if (curtime < users[0].time) {
+                    int waittime = users[0].time - curtime;
+                    steps.add((WAIT, users[0].time - curtime, new int[0]));
+                    if (operate(steps, passengers, floor,
+                                curtime + waittime, totaltime, open)) {
                         return true;
                     }
                 } else {
-                    if (curtime < users[0].time) {
-                        int waittime = users[0].time - curtime;
-                        steps.add((WAIT, users[0].time - curtime, new int[0]));
-                        if (operate(steps, passengers, floor,
-                                    curtime + waittime, totaltime, open)) {
-                            return true;
-                        }
-                    } else {
-                        steps.add((OPEN, 0, new int[0]));
-                        if (operate(steps, passengers, floor, curtime, totaltime, !open)) {
-                            return true;
-                        }
-                        //    steps.add((CLOSE, 1, [users[0].id]));
-                        //    passengers.add(users[0]);
-                        //    operate(steps, passengers, floor, curtime + iotime, !open);
+                    steps.add((OPEN, 0, new int[0]));
+                    if (operate(steps, passengers, floor, curtime, totaltime, !open)) {
+                        return true;
                     }
+                    //    steps.add((CLOSE, 1, [users[0].id]));
+                    //    passengers.add(users[0]);
+                    //    operate(steps, passengers, floor, curtime + iotime, !open);
                 }
             }
         }

@@ -50,8 +50,6 @@ class Elevator
     }
 
     void declareUsers(String users_str) {
-        //OUT << "users: " << EOL;
-        //OUT << users_str << EOL;
         foreach (String user_str in users_str.split("\n")) {
             String[] params = user_str.split(",");
             User user = new User((to int)params[0], (to int)params[1],
@@ -65,18 +63,11 @@ class Elevator
         if (users.size == 0) {
             return true;
         }
-        //print users;
 
         if (open) {
             int[] getonuserids = [];
-            //foreach (User passenger in passengers) {
-            //    if (passenger.out == floor) {
-            //        getonuserids.add(passenger.id);
-            //    }
-            //}
             foreach (User user in users) {
                 if (user.time <= curtime) {
-                    //print user.time, curtime;
                     if (user.take == floor) {
                         getonuserids.add(user.id);
                     }
@@ -86,7 +77,6 @@ class Elevator
             }
             steps.add((CLOSE, getonuserids.size, getonuserids));
             foreach (int userid in getonuserids) {
-                //print users, userid;
                 foreach (User user in users) {
                     if (user.id == userid) {
                         passengers.add(user);
@@ -112,7 +102,6 @@ class Elevator
                 steps.add((DOWN, destination, new int[0]));
                 time = (floor - destination) * movetime;
             }
-            //print steps, passengers, destination, open;
             if (operate(steps, passengers, destination,
                         curtime + time, open)) {
                 return true;
@@ -127,8 +116,6 @@ class Elevator
                         break;
                     }
                 }
-                //print users;
-                //print steps, passengers, floor, curtime, open;
                 if (operate(steps, passengers, floor, curtime, !open)) {
                     return true;
                 }
@@ -145,9 +132,6 @@ class Elevator
                     if (operate(steps, passengers, floor, curtime, !open)) {
                         return true;
                     }
-                    //    steps.add((CLOSE, 1, [users[0].id]));
-                    //    passengers.add(users[0]);
-                    //    operate(steps, passengers, floor, curtime + iotime, !open);
                 }
             }
         }
@@ -177,8 +161,6 @@ class Elevator
         int floor = 1;
         String door = "E";
         int[] passengers = [];
-        //for (int index = 0; index < steps.size; index++) {
-        //    Tuple<int, int, int[]> step = steps[index];
         foreach (Tuple<int, int, int[]> step in steps) {
             switch (step[0]) {
             case OPEN:
@@ -225,10 +207,6 @@ class Elevator
         Tuple<int, int, int[]>[] steps = [];
         User[] passengers = [];
         operate(steps, passengers, 1, 0, false);
-        //for (int i = 0; i < steps.size; i++) {
-        //    print i, steps[i];
-        //}
-        //print steps;
         return outputSteps(steps);
     }
 }
