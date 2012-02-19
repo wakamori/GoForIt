@@ -9,6 +9,8 @@ author chen_ji <wakamori111 at gmail.com>
 using konoha.io.*;
 using konoha.math.*;
 
+MAX_PASSENGER_NUM = 5
+
 class User
 {
     int id;
@@ -112,6 +114,7 @@ class Checker
         boolean open = false;
         int prevfloor = 1;
         int prevtime = 0;
+        int[] passengers = [];
         foreach (Movement move in movements) {
             if (move.open == open) {
                 print move;
@@ -123,10 +126,29 @@ class Checker
                     print move;
                     return false;
                 }
+                foreach (int passenger_id in move.passengers) {
+                    if (passenger_id == 0) continue;
+                    if (passenger_id in? passengers) {
+                        passengers.remove(passengers.indexOf(passenger_id));
+                    } else {
+                        print move;
+                        return false;
+                    }
+                }
             } else {
                 if (move.time - prevtime < 5) {
                     print move;
                     return false;
+                }
+                foreach (int passenger_id in move.passengers) {
+                    if (passenger_id == 0) continue;
+                    if (!(passenger_id in? passengers) &&
+                            passengers.size < MAX_PASSENGER_NUM) {
+                        passengers.add(passenger_id);
+                    } else {
+                        print move;
+                        return false;
+                    }
                 }
             }
             open = move.open;

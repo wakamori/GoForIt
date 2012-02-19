@@ -105,7 +105,8 @@ class Elevator
             foreach (User user in users) {
                 if (user.time <= curtime) {
                     //print user.time, curtime;
-                    if (user.take == floor && getonuserids.size < capacity&&
+                    if (user.take == floor &&
+                            getonuserids.size + passengers.size < capacity &&
                             !(user in? passengers)) {
                         getonuserids.add(user.id);
                     }
